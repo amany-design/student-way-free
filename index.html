@@ -1,173 +1,904 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>مساعد الطلاب</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دليل Wayground الذكي: ابنِ اختباراتك الإلكترونية بالذكاء الاصطناعي</title>
+<meta name="theme-color" content="#2e1065">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
-    background: #eef2f7;
-    color: #1f2937;
-    display: flex;
-    justify-content: center;
-  }
-  .app {
-    width: 100%;
-    max-width: 640px;
-    min-height: 100vh;
-    background: #ffffff;
-    display: flex;
-    flex-direction: column;
-  }
-  header {
-    background: #2563eb;
-    color: #fff;
-    padding: 16px 20px;
-    font-size: 20px;
-    font-weight: bold;
-  }
-  #chat {
-    flex: 1;
-    padding: 16px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .msg {
-    max-width: 85%;
-    padding: 10px 14px;
-    border-radius: 14px;
-    line-height: 1.8;
-    font-size: 16px;
-    white-space: pre-wrap;
-  }
-  .bot  { background: #e5e7eb; align-self: flex-start; border-top-right-radius: 4px; }
-  .user { background: #2563eb; color: #fff; align-self: flex-end; border-top-left-radius: 4px; }
-  #questions {
-    border-top: 1px solid #e5e7eb;
-    padding: 12px 16px 16px;
-    background: #f9fafb;
-    max-height: 45vh;
-    overflow-y: auto;
-  }
-  #questions h2 {
-    margin: 0 0 10px;
-    font-size: 15px;
-    color: #6b7280;
-    font-weight: normal;
-  }
-  .q-btn {
-    display: block;
-    width: 100%;
-    text-align: right;
-    margin-bottom: 8px;
-    padding: 12px 14px;
-    font-size: 16px;
-    font-family: inherit;
-    background: #fff;
-    color: #1d4ed8;
-    border: 1.5px solid #bfdbfe;
-    border-radius: 10px;
-    cursor: pointer;
-  }
-  .q-btn:hover, .q-btn:active { background: #dbeafe; }
-  #reset {
-    margin-top: 4px;
-    background: none;
-    border: none;
-    color: #6b7280;
-    font-family: inherit;
-    font-size: 14px;
-    cursor: pointer;
-    text-decoration: underline;
-  }
+:root{
+  --ink:#1f1b3a; --ink-soft:#5b5679; --line:#e4defa;
+  --violet:#6d28d9; --violet-deep:#4c1d95; --night:#1e1b4b;
+  --lav:#f3f0ff; --lav-2:#ebe5ff; --page:#f7f5ff; --white:#fff;
+  --ok:#0f766e; --warn:#b45309; --err:#b91c1c;
+  --radius:18px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; font-family:'Tajawal','Segoe UI',Tahoma,'Noto Naskh Arabic',system-ui,sans-serif;
+  background:var(--page); color:var(--ink); line-height:1.8; font-size:16px;
+  min-height:100vh; min-height:100dvh;
+}
+button,input,select,textarea{font-family:inherit; font-size:inherit; color:inherit}
+:focus-visible{outline:3px solid #a78bfa; outline-offset:2px}
+.lt{unicode-bidi:isolate; direction:ltr; font-family:'Segoe UI',Tahoma,system-ui,sans-serif; font-weight:600; font-size:.95em}
+
+#app{max-width:880px; margin:0 auto; min-height:100vh; min-height:100dvh; display:flex; flex-direction:column; background:var(--page)}
+
+/* ===== الهيدر ===== */
+.hero{
+  background:
+    radial-gradient(900px 300px at 85% -10%, rgba(167,139,250,.45), transparent 60%),
+    linear-gradient(160deg,var(--night) 0%, var(--violet-deep) 70%, #6d28d9 100%);
+  color:#fff; padding:28px 18px 70px; text-align:center;
+  border-radius:0 0 28px 28px;
+}
+.hero h1{margin:0; font-size:clamp(1.35rem,4.6vw,2.05rem); line-height:1.55; font-weight:800; letter-spacing:0}
+.hero .sub{margin:8px 0 0; font-size:.95rem; color:#ddd6fe}
+
+.notes{
+  position:relative; margin:-48px 14px 0; background:var(--white); border-radius:var(--radius);
+  border:1px solid var(--line); box-shadow:0 10px 30px -12px rgba(76,29,149,.35);
+  padding:18px 20px 14px; border-inline-start:6px solid var(--violet);
+}
+.notes p{margin:.35rem 0}
+.notes .lead{font-weight:700; color:var(--violet-deep)}
+.notes h2{margin:.9rem 0 .2rem; font-size:1.05rem; color:var(--violet-deep)}
+.notes ul{list-style:none; margin:.4rem 0 .6rem; padding:0; display:grid; gap:6px}
+.notes li{background:var(--lav); border-radius:10px; padding:6px 12px; color:var(--ink); cursor:default; user-select:text}
+.notes li::before{content:"؟"; color:var(--violet); font-weight:800; margin-inline-end:8px}
+.notes ul.topics li::before{content:"✔"; color:var(--ok)}
+.notes .important{background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:8px 12px; margin-top:.7rem}
+.notes .go{font-weight:800; color:var(--violet); margin-top:.7rem}
+.notes-actions{display:flex; justify-content:flex-end; margin-top:6px}
+.btn-ghost{
+  background:var(--lav); border:1px solid var(--line); color:var(--violet-deep);
+  border-radius:999px; padding:4px 14px; cursor:pointer; font-weight:700; font-size:.88rem
+}
+.btn-ghost:hover{background:var(--lav-2)}
+
+/* ===== شريط الصوت ===== */
+.voicebar{
+  position:sticky; top:0; z-index:20; margin:14px 14px 0; background:rgba(255,255,255,.96);
+  backdrop-filter:blur(8px); border:1px solid var(--line); border-radius:14px; padding:8px 10px;
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center; box-shadow:0 6px 18px -12px rgba(76,29,149,.5);
+}
+.vb-clear{background:none; border:0; color:var(--violet); font-weight:700; cursor:pointer; padding:4px 6px; font-size:.9rem; text-decoration:underline; text-underline-offset:3px}
+.pill{display:inline-flex; align-items:center; gap:4px; background:var(--lav); border:1px solid var(--line); border-radius:999px; padding:2px 6px 2px 10px; font-size:.88rem; font-weight:500}
+.pill select{background:transparent; border:0; padding:3px 2px; cursor:pointer; font-weight:700; color:var(--violet-deep); max-width:130px}
+.vb-auto{display:inline-flex; align-items:center; gap:6px; font-size:.88rem; cursor:pointer; user-select:none}
+.vb-auto input{width:18px; height:18px; accent-color:var(--violet)}
+.voice-warn{flex-basis:100%; font-size:.82rem; color:var(--warn); background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:6px 10px; display:none}
+.voice-warn.show{display:block}
+
+/* ===== المحادثة ===== */
+#chat{flex:1; padding:16px 14px 150px; display:flex; flex-direction:column; gap:14px}
+.msg{display:flex; gap:10px; align-items:flex-start; max-width:100%}
+.msg.user{justify-content:flex-start}
+.avatar{flex:none; width:36px; height:36px; border-radius:50%; background:linear-gradient(145deg,var(--violet),#a78bfa); color:#fff; display:grid; place-items:center; font-size:1.05rem; box-shadow:0 4px 10px -4px rgba(109,40,217,.7)}
+.bubble{background:var(--white); border:1px solid var(--line); border-radius:6px 18px 18px 18px; padding:12px 16px; min-width:0; max-width:min(100%,680px); overflow-wrap:anywhere}
+.msg.user{flex-direction:row}
+.msg.user .bubble{background:linear-gradient(135deg,var(--violet),var(--violet-deep)); color:#fff; border:0; border-radius:18px 6px 18px 18px; white-space:pre-wrap}
+.msg.user .avatar{background:#e0d7ff; color:var(--violet-deep); box-shadow:none}
+.msg.speaking .bubble{border-color:var(--violet); box-shadow:0 0 0 3px rgba(109,40,217,.15)}
+.bubble p{margin:.25rem 0}
+.sec + .sec{margin-top:16px; padding-top:14px; border-top:1px dashed var(--line)}
+.sec h3{margin:0 0 6px; font-size:1.08rem; color:var(--violet-deep); font-weight:800}
+.badge-simple{display:inline-block; background:#ecfdf5; color:var(--ok); border:1px solid #a7f3d0; border-radius:999px; padding:0 10px; font-size:.8rem; font-weight:700; margin-bottom:4px}
+ol.steps{list-style:none; margin:.5rem 0; padding:0; display:grid; gap:10px; counter-reset:s}
+ol.steps>li{display:flex; gap:10px; align-items:flex-start; counter-increment:s}
+ol.steps>li::before{content:counter(s); flex:none; width:26px; height:26px; border-radius:50%; background:var(--violet); color:#fff; font-weight:800; display:grid; place-items:center; font-size:.85rem; margin-top:2px}
+ol.steps .st{font-weight:800}
+ol.steps .sd{display:block; color:var(--ink)}
+ul.items{margin:.4rem 0; padding:0; list-style:none; display:grid; gap:6px}
+ul.items>li{background:var(--lav); border-radius:10px; padding:6px 12px}
+ul.items b{color:var(--violet-deep)}
+ul.check{margin:.3rem 0; padding:0; list-style:none; display:grid; gap:6px}
+ul.check>li::before{content:"✔"; color:var(--ok); margin-inline-end:8px; font-weight:800}
+.stage{margin:.6rem 0}
+.stage h4{margin:0; color:var(--violet-deep)}
+.stage ul{margin:.2rem 0 0; padding-inline-start:1.2rem}
+.note{background:#fff7ed; border:1px solid #fed7aa; border-radius:12px; padding:6px 12px; margin-top:8px; font-size:.95rem}
+.videos{display:grid; gap:8px; margin-top:10px}
+.vcard{
+  display:flex; align-items:center; gap:12px; width:100%; text-align:start; cursor:pointer;
+  background:var(--lav); border:1px solid #d9cffc; border-radius:12px; padding:8px 10px;
+}
+.vcard:hover{background:var(--lav-2); border-color:#b9a7f6}
+.vthumb{position:relative; flex:none; width:76px; height:48px; border-radius:8px; overflow:hidden; background:linear-gradient(135deg,var(--night),var(--violet))}
+.vthumb img{width:100%; height:100%; object-fit:cover; display:block}
+.vthumb::after{content:"▶"; position:absolute; inset:0; display:grid; place-items:center; color:#fff; font-size:1rem; text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.vtext{min-width:0; display:grid}
+.vtitle{font-weight:700; font-size:.93rem; line-height:1.5; color:var(--violet-deep)}
+.vurl{direction:ltr; text-align:right; font-size:.76rem; color:var(--ink-soft)}
+.msg-actions{margin-top:10px; display:flex; gap:8px}
+.listen{background:var(--lav); border:1px solid var(--line); color:var(--violet-deep); border-radius:999px; padding:3px 14px; cursor:pointer; font-weight:700; font-size:.86rem}
+.listen:hover{background:var(--lav-2)}
+.listen.on{background:var(--violet); color:#fff; border-color:var(--violet)}
+.typing{display:inline-flex; gap:5px; padding:6px 2px}
+.typing i{width:8px; height:8px; border-radius:50%; background:#b9a7f6; animation:bounce 1s infinite ease-in-out}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.5}40%{transform:translateY(-6px);opacity:1}}
+@media (prefers-reduced-motion:reduce){.typing i{animation:none}}
+
+/* ===== مربع الكتابة ===== */
+#composer{
+  position:fixed; bottom:0; inset-inline:0; z-index:30; padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));
+  background:linear-gradient(to top,var(--page) 70%,rgba(247,245,255,0));
+}
+.composer-in{max-width:852px; margin:0 auto; display:flex; gap:8px; align-items:flex-end; background:var(--white); border:1.5px solid #cbbcf7; border-radius:20px; padding:6px 8px 6px 6px; box-shadow:0 10px 30px -14px rgba(76,29,149,.55)}
+#q{flex:1; border:0; resize:none; outline:0; background:transparent; padding:8px 10px; max-height:120px; line-height:1.6}
+#send{flex:none; border:0; cursor:pointer; background:linear-gradient(135deg,var(--violet),var(--violet-deep)); color:#fff; font-weight:800; border-radius:14px; padding:9px 18px}
+#send:disabled{opacity:.5; cursor:not-allowed}
+
+/* ===== النوافذ ===== */
+.overlay{position:fixed; inset:0; z-index:100; background:rgba(30,27,75,.62); backdrop-filter:blur(5px); display:none; align-items:center; justify-content:center; padding:16px}
+.overlay.show{display:flex}
+.modal{background:var(--white); border-radius:24px; width:100%; max-width:430px; padding:26px 24px 24px; text-align:center; box-shadow:0 30px 70px -20px rgba(0,0,0,.6)}
+.modal h2{margin:0; font-size:1.5rem; color:var(--violet)}
+.modal .m-sub{margin:6px 0 16px; font-size:.9rem; color:var(--ink-soft)}
+.modal label{display:block; font-weight:800; margin-bottom:8px}
+.modal input[type=text]{width:100%; padding:11px 14px; border:2px solid var(--ink); border-radius:12px; text-align:center; background:#fff}
+.modal input[type=text]:focus{border-color:var(--violet); outline:0; box-shadow:0 0 0 4px rgba(109,40,217,.18)}
+.modal .err{min-height:1.4em; margin:6px 0 0; color:var(--err); font-size:.88rem}
+.modal .go-btn{width:100%; margin-top:10px; border:0; cursor:pointer; background:var(--violet); color:#fff; font-weight:800; border-radius:12px; padding:12px; font-size:1.05rem}
+.modal .go-btn:hover{background:var(--violet-deep)}
+.modal .go-btn:disabled{opacity:.6; cursor:wait}
+
+.vmodal{background:#0f0b24; border-radius:18px; width:100%; max-width:860px; overflow:hidden; box-shadow:0 30px 70px -20px rgba(0,0,0,.7)}
+.vm-head{display:flex; align-items:center; gap:10px; padding:10px 14px; color:#fff}
+.vm-head h3{margin:0; flex:1; font-size:1rem; font-weight:700}
+.vm-close{border:0; background:rgba(255,255,255,.15); color:#fff; width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:1.1rem}
+.vm-close:hover{background:rgba(255,255,255,.3)}
+.vm-frame{position:relative; aspect-ratio:16/9; background:#000}
+.vm-frame iframe{position:absolute; inset:0; width:100%; height:100%; border:0}
+.vm-foot{padding:8px 14px 12px; font-size:.82rem; color:#c4b5fd}
+.vm-foot a{color:#ddd6fe}
 </style>
 </head>
 <body>
+<div id="app">
 
-<div class="app">
-  <header id="title"></header>
-  <div id="chat"></div>
-  <div id="questions">
-    <h2>اختاري سؤالك:</h2>
-    <div id="buttons"></div>
-    <button id="reset">مسح المحادثة</button>
+  <header class="hero">
+    <h1>دليل Wayground الذكي: ابنِ اختباراتك الإلكترونية بالذكاء الاصطناعي</h1>
+  </header>
+
+  <section class="notes" id="notes" aria-label="ملاحظات">
+    <p class="lead">أهلًا بك في دليل <span class="lt">Wayground</span> الذكي! 🌟</p>
+    <p>مساعدك الذكي لتعلّم تصميم الاختبارات الإلكترونية باستخدام الذكاء الاصطناعي.</p>
+    <p>من خلال هذا الدليل، يمكنك التعرف على كل ما تحتاج إليه لإنشاء اختبار إلكتروني، بدايةً من:</p>
+    <ul class="topics">
+      <li>مفهوم الاختبارات الإلكترونية ومنصة <span class="lt">Wayground</span> ومميزاتها.</li>
+      <li>إنشاء حساب جديد على المنصة وتسجيل الدخول.</li>
+      <li>توليد الاختبارات باستخدام الأوامر النصية.</li>
+      <li>توليد الاختبارات من خلال رفع الملفات.</li>
+      <li>مراجعة الأسئلة المولدة وإجراء التعديلات عليها.</li>
+      <li>ضبط إعدادات الاختبار.</li>
+      <li>معاينة الاختبار ونشره ومشاركته مع الطلاب.</li>
+    </ul>
+    <p>🎥 ستجد أيضًا فيديوهات تعليمية توضيحية تساعدك على تنفيذ الخطوات عمليًا.</p>
+    <h2>كيف تبدأ؟</h2>
+    <p>اطرح سؤالك عن أي خطوة تريد تعلمها، وسأرشدك إليها خطوة بخطوة، بالاعتماد على دليل الشرح المرفق.</p>
+    <p class="go">🚀 هيا نبدأ رحلتك في تصميم اختباراتك الإلكترونية بذكاء!</p>
+    <div class="notes-actions"><button type="button" class="btn-ghost" id="listenNotes">🔊 استمع للملاحظات</button></div>
+  </section>
+
+  <div class="voicebar" id="voicebar" role="group" aria-label="إعدادات الصوت">
+    <button type="button" class="vb-clear" id="clearChat">مسح المحادثة</button>
+    <button type="button" class="vb-clear" id="changeName">تغيير الاسم</button>
+    <label class="pill"><select id="vOn" aria-label="الصوت">
+      <option value="on">🔊 الصوت: تشغيل</option>
+      <option value="off">🔇 الصوت: كتم</option>
+    </select></label>
+    <label class="pill"><select id="vSpeed" aria-label="السرعة">
+      <option value="0.8">السرعة: بطيئة</option>
+      <option value="1" selected>السرعة: عادية</option>
+      <option value="1.2">السرعة: سريعة</option>
+    </select></label>
+    <label class="pill"><select id="vGender" aria-label="نوع الصوت">
+      <option value="female" selected>الصوت: أنثى</option>
+      <option value="male">الصوت: ذكر</option>
+    </select></label>
+    <label class="vb-auto"><input type="checkbox" id="vAuto"> قراءة تلقائية للإجابات</label>
+    <div class="voice-warn" id="voiceWarn"></div>
   </div>
+
+  <main id="chat" aria-live="polite"></main>
+
+  <form id="composer" autocomplete="off">
+    <div class="composer-in">
+      <textarea id="q" rows="1" placeholder="اكتب سؤالك هنا…" aria-label="اكتب سؤالك"></textarea>
+      <button type="submit" id="send">إرسال</button>
+    </div>
+  </form>
 </div>
 
+<!-- نافذة كتابة الاسم -->
+<div class="overlay show" id="nameOverlay" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+  <form class="modal" id="nameForm" autocomplete="off">
+    <h2 id="nameTitle">✨ أهلًا بك</h2>
+    <p class="m-sub">دليل <span class="lt">WAYGROUND</span> الذكي: ابنِ اختباراتك الإلكترونية بالذكاء الاصطناعي</p>
+    <label for="nameInput">للبدء : اكتب اسمك ثلاثي</label>
+    <input type="text" id="nameInput" placeholder="الاسم الثلاثي" maxlength="80" autocomplete="name" required>
+    <p class="err" id="nameErr" role="alert"></p>
+    <button type="submit" class="go-btn" id="nameGo">ابدأ</button>
+  </form>
+</div>
+
+<!-- نافذة الفيديو داخل نفس الصفحة -->
+<div class="overlay" id="videoOverlay" role="dialog" aria-modal="true" aria-label="مشغل الفيديو">
+  <div class="vmodal">
+    <div class="vm-head"><h3 id="vmTitle"></h3><button type="button" class="vm-close" id="vmClose" aria-label="إغلاق">✕</button></div>
+    <div class="vm-frame"><iframe id="vmFrame" title="فيديو توضيحي" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
+    <div class="vm-foot">إذا لم يعمل الفيديو هنا، <a id="vmExt" href="#" target="_blank" rel="noopener">افتحه على يوتيوب</a>.</div>
+  </div>
+</div>
 <script>
-/* ============================================================
-   الجزء ده الوحيد اللي بتعدلي فيه
-   ============================================================ */
+/*ENGINE_START*/
+function norm(s){
+  return String(s||'').toLowerCase()
+    .replace(/[\u064B-\u065F\u0670\u0640]/g,'')
+    .replace(/[أإآٱ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').replace(/ؤ/g,'و').replace(/ئ/g,'ي')
+    .replace(/[^\u0621-\u064Aa-z0-9\s.]/g,' ')
+    .replace(/\s+/g,' ').trim();
+}
+/* كلمة تبدأ بـ "=" تُطابَق ككلمة كاملة (مع السوابق ال/و/ب/ل/ف) */
+const K=(w,...a)=>a.map(x=>x[0]==='='?{k:norm(x.slice(1)),w,ww:true}:{k:norm(x),w});
+const escRe=s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+function hit(q,e){
+  if(e.ww){
+    return q.split(' ').some(t=>t.replace(/^(وال|بال|فال|لل|ال|و|ب|ل|ف)/,'')===e.k||t===e.k);
+  }
+  if(/^[a-z0-9. ]+$/.test(e.k)) return new RegExp('(^|[^a-z0-9])'+escRe(e.k)+'($|[^a-z0-9])').test(q);
+  return q.includes(e.k);
+}
 
-// عنوان الصفحة
-const TITLE = "شات بوت المحاكاة التفاعلية";
+/* ===== الفيديوهات المرفقة بالمادة التعليمية ===== */
+const VIDEOS={
+  acc_pc:{id:'ChcNYNgjmac',title:'طريقة إنشاء حساب جديد على Wayground (الكمبيوتر)'},
+  acc_mobile:{id:'oOOgOfHtzYc',short:true,title:'تحميل تطبيق الموبايل وإنشاء حساب جديد (الموبايل)'},
+  prompt_pc:{id:'vnLE3bfmlGE',title:'إنشاء اختبار بكتابة الأمر لتوليد الاختبار (الكمبيوتر)'},
+  prompt_mobile:{id:'PRbQHIN83uw',title:'إنشاء اختبار بكتابة الأمر لتوليد الاختبار (تطبيق الموبايل)'},
+  file_pc:{id:'-LO80m5Jq9w',title:'إنشاء اختبار برفع ملف لتوليد الاختبار (الكمبيوتر)'},
+  file_mobile:{id:'BrxGxX-w0i4',short:true,title:'إنشاء اختبار برفع ملف لتوليد الاختبار (تطبيق الموبايل)'},
+  edit_pc:{id:'APaNuoJh5_s',title:'إجراء التعديلات على الأسئلة: كتابة وصور وإضافة وحذف وتحديد الإجابة الصحيحة (الكمبيوتر)'},
+  edit_mobile:{id:'kS6rJjQAgrc',title:'إجراء التعديلات على الأسئلة: كتابة وصور وإضافة وحذف وتحديد الإجابة الصحيحة (الموبايل)'},
+  set_pc:{id:'qfSdgtosOXs',title:'ضبط إعدادات الاختبار (الكمبيوتر)'},
+  set_mobile:{id:'hKKkXUGrAHo',title:'ضبط إعدادات الاختبار (تطبيق الموبايل)'},
+  pub_pc:{id:'KKhwCsdikPs',title:'معاينة الاختبار ثم نشره للطلاب (الكمبيوتر)'},
+  pub_mobile:{id:'CIXuqFgaELY',title:'معاينة الاختبار ثم نشره للطلاب (تطبيق الموبايل)'}
+};
+const UI_NOTE='ℹ️ قد تختلف أسماء بعض الأزرار أو مواضعها قليلًا عما هو مذكور هنا، كما قد تختلف إتاحة بعض الخصائص من حساب لآخر، فاعتمد على ما تراه أمامك على الشاشة.';
+const EDIT_V=['edit_pc','edit_mobile'], PUB_V=['pub_pc','pub_mobile'];
 
-// رسالة الترحيب
-const WELCOME = "أهلًا بيك! اختار السؤال اللي عايز تعرف إجابته من القائمة تحت 👇";
-
-// الأسئلة والأجوبة
-// لإضافة سؤال جديد: انسخي سطر كامل (من { لحد },) وحطيه تحت آخر سطر وغيري الكلام.
-// خلي بالك من العلامات " " والفاصلة , في آخر كل سطر.
-const FAQ = [
-  { q: "اذكر مفهوم المحاكاة التفاعلية",
-    a: "كل المواد التعليمية التي يمكن لمسها وتناولها وتمثل الواقع بابعاده الثلاثة ( الطول والعرض والعمق)،إما كما هو او بإعادة تشكيله او ترتيبه او اختصاره ليصبح أكثر مناسبة لعملية التعليم والتعلم." },
-
-  { q: "مميزات المحاكاة التفاعلية",
-    a: "ويقصد بها الأشياء الحقيقية مأخوذة من بيئاتها الطبيعية كما هى دون تغير فيها أو تعديل." },
-
-  { q: "عناصر المحاكاة التفاعلية",
-    a: "الممارسة العملية والتعامل مع الأشياء الحقيقية التى تدرس بذاتها، والأفضل لو كانت دراسة هذه الأشياء فى أماكنها أو بيئاتها الطبيعية..\nيصعب على المعلم أحياناً أخذ تلميذه إلى حيث توجد هذه الأشياء فى بيئتها الطبيعية.." },
-
-  { q: "نماذج المحاكاة التفاعلية",
-    a: "قد يكون الشىء ذاته كثير التفاصيل مما يشتت الدارس بينما يركز النموذج على التفاصيل المراد تعلمها." },
-
-  { q: "اهمية المحاكاة",
-    a: "يمكن للنموذج أن يجسد أشياء ليس لها واقع في الوقت الحالي كالديناصورات والحيوانات المنقرضة وبعض المباني الأثرية غير الموجودة حاليًا كفنار الإسكندرية.(بعد زماني ومكاني).\nتكبير الواقع أو تصغيره." },
- { q: "نهاية",
-    a: "https://www.youtube.com/watch?v=xGvxNc2yhRw&t=2s" }
+/* ===== أقسام المادة التعليمية ===== */
+const SECTIONS=[
+{ id:'concept', icon:'📘', title:'مفهوم الاختبارات الإلكترونية',
+  intro:[
+   'الاختبار الإلكتروني أداة أو وسيلة من وسائل التقويم، يتم تصميمها وبناؤها وتطبيقها وإدارتها وتصحيحها إلكترونيًا بهدف قياس التحصيل المعرفي للمتعلم. وبمعنى آخر هو وسيلة سهلة لتقويم الطلاب إلكترونيًا، تمكّن المعلم من إعداد اختبارات بطريقة سهلة لتطبيقها على الطلاب، وتُصحَّح إلكترونيًا وفوريًا، مما يضمن المصداقية والشفافية.',
+   'ويمكن أيضًا توظيفها لزيادة التحصيل العلمي لدى الطلاب وترسيخ المعلومات وتنمية مهارة التعلم الذاتي.',
+   'ومن أنواع الأسئلة التي تُبنى بها الاختبارات الإلكترونية: الاختيار من متعدد، والصح والخطأ، والمطابقة، وترتيب الخطوات، وإكمال الفراغ، والأسئلة المفتوحة.'],
+  videos:[],
+  simple:['الاختبار الإلكتروني وسيلة تقويم تُصمَّم وتُطبَّق وتُصحَّح إلكترونيًا لقياس تحصيل الطالب.','يُصحَّح فوريًا، وأنواع أسئلته: اختيار من متعدد، صح وخطأ، مطابقة، ترتيب خطوات، إكمال فراغ، وأسئلة مفتوحة.'],
+  kw:[...K(7,'مفهوم الاختبارات','مفهوم الاختبار','تعريف الاختبار','ما هو الاختبار','ما هي الاختبارات','ما الاختبار','الاختبارات الالكترونيه','الاختبار الالكتروني','ما هي الاختبارات الالكترونيه'),...K(2,'انواع الاسئله','مفهوم','تعريف')]
+},
+{ id:'importance', icon:'⭐', title:'أهمية الاختبارات الإلكترونية',
+  items:[
+   ['التصحيح الفوري','الموضوعية والدقة بالقضاء على التحيز وأخطاء التصحيح اليدوي، وتقديم تغذية راجعة فورية تعزز عملية التعلم.'],
+   ['دعم كفاءة الوقت والجهد','تختصر الساعات الطويلة التي يبذلها المعلم في رصد الدرجات وتحليل النتائج إحصائيًا، مما يوجه الجهد نحو التوجيه التربوي الفردي.'],
+   ['المرونة والشمولية','توفر بيئة تقييم مرنة تتناسب مع أنماط التعلم المختلفة، وتدعم استقلالية المتعلم وموثوقية قياس مهارات التفكير العليا.'],
+   ['القابلية للتوسع','يمكن تطبيقها على أعداد كبيرة من الطلاب في وقت واحد.'],
+   ['التحفيز','عرض الأسئلة بشكل تفاعلي وبالصور والمؤقت يزيد دافعية الطالب.'],
+   ['المرونة في مكان الأداء','يمكن أداء الاختبار داخل القاعة أو من المنزل بحسب ما يحدده المعلم.'],
+   ['حفظ البيانات وإعادة الاستخدام','تُحفظ الأسئلة والنتائج، ويمكن تعديل الاختبار وإعادة استخدامه في فصول أخرى.'],
+   ['ملاءمته لتدريس العلوم','يتيح إدراج الصور والرسوم لأعضاء الجسم والتجارب والأجهزة المعملية داخل السؤال.']
+  ],
+  intro:['أهم ما تقدمه الاختبارات الإلكترونية:'],
+  videos:[],
+  simple:['تصحيح فوري ودقيق مع تغذية راجعة للطالب.','توفير وقت المعلم وجهده، وإمكانية تطبيقها على أعداد كبيرة من الطلاب.','أسئلة تفاعلية بالصور والمؤقت، ويمكن إعادة استخدام الاختبار وحفظ النتائج.'],
+  kw:[...K(7,'اهميه الاختبارات','اهميه الاختبار','فوائد الاختبارات','فائده الاختبارات','لماذا الاختبارات','ليه الاختبارات','اهميه'),...K(3,'التصحيح الفوري','القابليه للتوسع')]
+},
+{ id:'ai_benefits', icon:'🤖', title:'مميزات إنشاء الاختبارات بالذكاء الاصطناعي',
+  intro:['يحقق الذكاء الاصطناعي في بناء الاختبارات المزايا الآتية:'],
+  items:[
+   ['التوليد الآلي المحكوم بالمصادر','قدرة فائقة على تحويل المقررات النصية وملفات PDF والدروس المرئية إلى بنوك أسئلة متكاملة ومتوافقة مع معايير المناهج في ثوانٍ معدودة.'],
+   ['التمايز وتخصيص مسارات التعلم (Personalization)','تكييف مستويات صعوبة الأسئلة تلقائيًا بناءً على استجابات الطلاب ومستوى إتقانهم، مما يحقق العدالة التعليمية.'],
+   ['جودة الصياغة اللغوية والتربوية','التدقيق اللغوي التلقائي، واقتراح أسئلة بديلة تقيس مهارات التحليل والتقييم بدلًا من الاعتماد حصريًا على التذكر.'],
+   ['تقليل الوقت والجهد','يقل الوقت والجهد المبذولان في صياغة الأسئلة يدويًا.'],
+   ['تنوع الأسئلة','تسهيل إنشاء أسئلة متعددة ومتنوعة من محتوى تعليمي واحد، مما يدعم الاختبارات المتكررة والتقييم التكويني.']
+  ],
+  videos:[],
+  simple:['الذكاء الاصطناعي يحوّل ملفاتك ودروسك إلى أسئلة جاهزة في ثوانٍ.','يضبط صعوبة الأسئلة، ويدقق الصياغة، ويوفر وقتك، ويعطيك أسئلة متنوعة من محتوى واحد.'],
+  kw:[...K(7,'مميزات انشاء الاختبارات','مميزات الاختبارات بالذكاء','فوائد الذكاء الاصطناعي','مميزات الذكاء','ميزات الذكاء','ليه الذكاء الاصطناعي','لماذا الذكاء الاصطناعي','التوليد الالي','فائده الذكاء'),...K(3,'الذكاء الاصطناعي','بالذكاء الاصطناعي'),...K(2,'مميزات','فوائد')]
+},
+{ id:'wayground', icon:'🌐', title:'منصة Wayground ومميزاتها',
+  intro:[
+   'Wayground هو الاسم الجديد لمنصة Quizizz المعروفة. وقد غُيّر اسمها في يونيو 2025 لأن المنصة تجاوزت فكرة الاختبارات القصيرة إلى بناء موارد تعليمية متنوعة. وهي منصة تعمل عبر المتصفح، تتيح للمعلم إنشاء اختبارات وأنشطة تفاعلية وتشغيلها مع الطلاب. وما زالت الحسابات والاختبارات القديمة وطرق الانضمام للطلاب تعمل بعد تغيير الاسم.',
+   'أهم مميزاتها في إنشاء الاختبارات الإلكترونية بالذكاء الاصطناعي:'],
+  items:[
+   ['Create with AI','توليد نشاط أو اختبار من موضوع أو أمر نصي، أو من مستند مرفوع، أو من رابط.'],
+   ['أنواع أسئلة متعددة','أكثر من 20 نوعًا، منها الاختيار من متعدد، والإكمال، والمطابقة، وإعادة الترتيب، والتصنيف، وتسمية الأجزاء على الصورة (Labeling)، والأسئلة المفتوحة. وقد تختلف إتاحة بعض الأنواع من حساب لآخر.'],
+   ['أنشطة أخرى إلى جانب الاختبار','بطاقات تعليمية (Flashcards)، وفيديو تفاعلي، وفقرات قراءة (Passages).'],
+   ['طرق متنوعة للتشغيل','جلسة مباشرة بالرمز (Join code)، أو تكليف الطلاب بالاختبار ليؤدوه في وقتهم، مع أنماط مثل الفردي والفريق والورقي.'],
+   ['انضمام سهل للطلاب','يدخل الطالب برمز الانضمام من صفحة الانضمام في الموقع (wayground.com/join).'],
+   ['نسخ متدرجة وتفسير للإجابات','يمكن توليد نسخ أسهل وأصعب من الاختبار نفسه، وشرح لسبب الخطأ بالذكاء الاصطناعي.'],
+   ['تقارير','تبيّن أداء كل طالب وكل سؤال، وتساعد المعلم على اكتشاف نقاط الضعف.'],
+   ['تكامل مع أدوات أخرى','إضافة لمتصفح Chrome تولّد الأسئلة من مستندات Google وملفات PDF وفيديو YouTube، وربط مع Google Classroom.']
+  ],
+  videos:[],
+  simple:['Wayground هو الاسم الجديد لمنصة Quizizz، وتعمل من المتصفح لإنشاء اختبارات وأنشطة تفاعلية.','تولّد لك الاختبار بالذكاء الاصطناعي من موضوع أو ملف أو رابط، وفيها أكثر من 20 نوعًا من الأسئلة.','يدخل الطلاب برمز من wayground.com/join، وتحصل على تقارير عن أداء كل طالب.'],
+  kw:[...K(7,'ما منصه','ما هي wayground','ما هو wayground','تعريف منصه','تعريف wayground','ما هي منصه','مميزات wayground','مميزات المنصه','الاسم الجديد','quizizz','كويزيز','كويزز'),...K(6,'انواع الاسئله','انواع الاسئلة'),...K(2,'wayground','منصه','وايجراوند','واي جراوند','create with ai')]
+},
+{ id:'account', icon:'🔐', title:'إنشاء حساب والدخول إلى منصة Wayground',
+  intro:['الهدف: أن تنشئ حسابًا على المنصة وتدخل إليها.'],
+  steps:[
+   ['افتح موقع المنصة','افتح متصفح Chrome، واكتب في شريط العنوان wayground.com ثم اضغط Enter. تظهر الصفحة الرئيسية للمنصة وبها زرا التسجيل (Sign up) وتسجيل الدخول (Log in).'],
+   ['اختر طريقة التسجيل','اضغط على Sign up، ثم اختر التسجيل بحساب Google (Continue with Google) لتدخل ببريد Gmail الخاص بك، واختر بريدك من القائمة التي تظهر لتأكيد الدخول. أو اكتب بريدك الإلكتروني وكلمة مرور جديدة.'],
+   ['اختر نوع الحساب وأكمل بياناتك','اختر المادة (مثل: العلوم) والمرحلة التي تقوم بالتدريس إليها (يمكن اختيار أكثر من مرحلة)، ثم اضغط Continue. بعدها تظهر الصفحة الرئيسية لحسابك.']
+  ],
+  note:UI_NOTE,
+  videos:['acc_pc','acc_mobile'],
+  simple:['افتح Chrome واكتب wayground.com ثم اضغط Sign up.','اختر Continue with Google وحدد بريد Gmail.','اختر المادة والمرحلة ثم Continue لتظهر صفحة حسابك.'],
+  kw:[...K(7,'انشاء حساب','انشئ حساب','عمل حساب','اعمل حساب','فتح حساب','افتح حساب','sign up','signup','log in','تسجيل الدخول','تسجيل دخول','wayground.com','تحميل التطبيق','تطبيق الموبيل','تطبيق الموبايل','تحميل تطبيق','احمل التطبيق','تنزيل التطبيق','نزل التطبيق','حمل التطبيق'),...K(5,'التطبيق','احمل'),...K(6,'سجل','تسجيل'),...K(5,'حساب'),...K(3,'gmail','جيميل','ايميل','بريد','continue with google'),...K(2,'تطبيق'),...K(1,'موبيل','موبايل','دخول')]
+},
+{ id:'create', icon:'➕', title:'بدء اختبار جديد: زر Create ونوع النشاط',
+  steps:[
+   ['اضغط على Create','من القائمة الجانبية أو العلوية اضغط على زر Create (إنشاء). تظهر لك قائمة بما تريد بناءه، مثل Assessment وLesson.'],
+   ['اختر نوع النشاط','اختر Assessment (اختبار). ستجد خيارين رئيسيين لإضافة الأسئلة: كتابتها يدويًا، أو توليدها بالذكاء الاصطناعي. وسنستخدم الثاني: Create with AI.']
+  ],
+  note:'💡 بعد ذلك تختار طريقة التوليد: من أمر نصي أو من ملف. اسألني عن أيٍّ منهما.',
+  videos:[],
+  simple:['اضغط Create ثم اختر Assessment.','اختر Create with AI لتوليد الأسئلة بالذكاء الاصطناعي.'],
+  kw:[...K(7,'زر create','اضغط على create','قائمه create','نوع النشاط','بدء اختبار جديد','ابدا اختبار','ابدأ اختبار','assessment'),...K(5,'انشاء اختبار','انشئ اختبار','اعمل اختبار','عمل اختبار','اختبار جديد'),...K(3,'create','lesson')]
+},
+{ id:'prompt', icon:'✍️', title:'توليد الاختبار بكتابة الأوامر النصية',
+  steps:[
+   ['افتح خيار التوليد من موضوع أو أمر نصي','من Create with AI اختر التوليد من موضوع (Topic / Prompt). يظهر مربع كتابة تدخل فيه ما تريد من الذكاء الاصطناعي.'],
+   ['اكتب أمرًا واضحًا ومحددًا','تتوقف جودة الأسئلة على دقة الأمر. اكتب فيه: الموضوع، والفئة المستهدفة، وعدد الأسئلة، ونوع السؤال، وعدد البدائل، ومستوى الصعوبة، ولغة الأسئلة (عربي أو إنجليزي). مثال: «قم بعمل اختبار مكون من 20 سؤال، 10 أسئلة اختيار من متعدد لكل سؤال 4 بدائل و10 صح وخطأ، موضوع الاختبار عن الجدول الدوري موجه للصف الأول الإعدادي، اجعل الاختبار باللغة الإنجليزية مراعيًا لجميع المستويات المعرفية».'],
+   ['اضبط الخيارات إن ظهرت لك','قد تطلب المنصة تحديد المادة أو المستوى الدراسي أو عدد الأسئلة أو نوعها. اختر ما يناسب اختبارك، ولا تترك أي خيار للاختيار التلقائي إن كان يسمح بتحديده. ويمكنك اختيار الموضوعات الرئيسية التي تريد إدراجها في الاختبار، كما يمكن إضافة موضوع جديد.'],
+   ['راجع الأسئلة المقترحة وأنشئ الاختبار','بعد عدة ثوانٍ تظهر قائمة الأسئلة المقترحة مع بدائلها والإجابة الصحيحة مميزة بعلامة. ثم اضغط Create resource.']
+  ],
+  note:'💡 اسألني عن «أمثلة لأوامر جيدة» لأعرض لك نماذج جاهزة.',
+  videos:['prompt_pc','prompt_mobile'],
+  simple:['اختر Topic / Prompt من Create with AI.','اكتب أمرًا واضحًا فيه: الموضوع، والفئة، وعدد الأسئلة، ونوعها، وعدد البدائل، والصعوبة، واللغة.','اضغط Create resource ثم راجع الأسئلة التي تظهر.'],
+  kw:[...K(7,'توليد الاختبار بالاوامر','كتابه الامر','كتابه امر','الاوامر النصيه','امر نصي','prompt','topic','بالامر','من موضوع','اوامر','اكتب امر','create resource','مربع الكتابه'),...K(5,'انشاء اختبار','انشئ اختبار','عمل اختبار','اعمل اختبار','توليد الاسئله','توليد الاختبار'),...K(4,'=امر','=الامر'),...K(2,'عدد الاسئله','عدد البدائل','مستوي الصعوبه','توليد')]
+},
+{ id:'prompt_examples', icon:'💬', title:'أمثلة لأوامر جيدة للتوليد',
+  intro:['يمكن استخدام هذه الأوامر كنماذج، مع تعديل الموضوع والفئة والعدد بما يناسبك:'],
+  items:[
+   ['الجهاز الدوري (مكونات الدم)','اكتب 10 أسئلة اختيار من متعدد باللغة العربية عن مكونات الدم ووظائفها لطلاب الفرقة الأولى بكلية التربية تخصص علوم، لكل سؤال أربعة بدائل وإجابة صحيحة واحدة.'],
+   ['الخلية','أنشئ اختبارًا من 12 سؤالًا عن مكونات الخلية الحيوانية: 6 أسئلة اختيار من متعدد وأربعة صح وخطأ وسؤالان مطابقة، مع تفسير قصير لكل إجابة.'],
+   ['التمثيل الضوئي','أنشئ 8 أسئلة عن التمثيل الضوئي بمستويات متدرجة (تذكر وفهم وتطبيق)، باللغة العربية ومناسبة لطلاب الجامعة.'],
+   ['الجدول الدوري','قم بعمل اختبار مكون من 20 سؤال، 10 أسئلة اختيار من متعدد لكل سؤال 4 بدائل و10 صح وخطأ، موضوع الاختبار عن الجدول الدوري موجه للصف الأول الإعدادي، اجعل الاختبار باللغة الإنجليزية مراعيًا لجميع المستويات المعرفية.']
+  ],
+  videos:['prompt_pc','prompt_mobile'],
+  simple:['اذكر في أمرك: الموضوع، والفئة المستهدفة، وعدد الأسئلة ونوعها، وعدد البدائل، والصعوبة، واللغة.','مثال: «اكتب 10 أسئلة اختيار من متعدد عن التمثيل الضوئي لطلاب الجامعة، لكل سؤال أربعة بدائل».'],
+  kw:[...K(8,'امثله','مثال','نموذج امر','نماذج اوامر','صيغه امر','امر جيد','اوامر جيده','كيف اكتب الامر','كيف اكتب امر','صياغه الامر'),...K(2,'مثل')]
+},
+{ id:'file', icon:'📁', title:'توليد الاختبار برفع ملف المحتوى',
+  intro:['هذه الطريقة مناسبة عندما تريد أن تكون الأسئلة من محاضرة أو فصل دراسي محدد.'],
+  steps:[
+   ['جهّز ملف المحتوى','احفظ المحتوى الذي تريد الأسئلة عنه في ملف بصيغة PDF أو Word أو Google Docs، بنص واضح قابل للتحديد وليس صورة ممسوحة. ويفضّل ألا يزيد عن عدة صفحات ليكون الناتج مركّزًا.'],
+   ['اختر التوليد من ملف','من شاشة Create with AI اختر التوليد من مستند (Upload a document). تفتح نافذة ملفات جهازك، اختر الملف واضغط Open. ويمكن أيضًا التوليد من رابط مقال أو صفحة (URL) إن كان المحتوى منشورًا على الإنترنت.'],
+   ['حدد عدد الأسئلة ونوعها','بعد رفع الملف حدد عدد الأسئلة ونوعها ولغتها إن ظهرت هذه الخيارات، ثم اضغط Create resource. عند ظهور الأسئلة قارن كل سؤال مع ملف المحتوى لتتأكد من أن ما ورد فيها موجود فعلًا في الملف ولم تخترعه المنصة.']
+  ],
+  videos:['file_pc','file_mobile'],
+  simple:['جهّز ملف PDF أو Word أو Google Docs بنص واضح قابل للتحديد.','اختر Upload a document ثم اختر الملف واضغط Open (أو استخدم رابطًا URL).','حدد عدد الأسئلة ونوعها، واضغط Create resource، ثم قارن الأسئلة بالملف.'],
+  kw:[...K(7,'رفع ملف','ارفع ملف','من ملف','upload a document','رفع الملف','توليد من ملف','من مستند','من رابط','ملف المحتوي','ملف pdf','google docs','ملف word'),...K(5,'pdf','word','docs','url','مقال'),...K(3,'ملف','مستند','=رفع')]
+},
+{ id:'review', icon:'🔍', title:'مراجعة الأسئلة المولّدة وتعديل نصها وإجابتها الصحيحة',
+  intro:['هذه المرحلة هي الأهم، لأن الأسئلة المولّدة بالذكاء الاصطناعي مسودة أولية تحتاج إلى مراجعة علمية ولغوية من المعلم.'],
+  steps:[
+   ['اقرأ كل سؤال واحكم عليه','افتح كل سؤال واسأل نفسك: هل المعلومة العلمية صحيحة؟ هل الصياغة واضحة ولا تحتمل أكثر من تفسير للطالب؟ هل توجد إجابة صحيحة واحدة فقط؟ هل البدائل الخاطئة منطقية وليست مضحكة أو واضحة الخطأ؟'],
+   ['عدّل نص السؤال والبدائل','اضغط داخل نص السؤال أو أحد بدائله لتكتب فيه مباشرة، وصحّح الأخطاء اللغوية والعلمية وأعد صياغة العبارات الغامضة. تأكد من أن النص العربي يظهر من اليمين إلى اليسار دون كلمات مفككة.'],
+   ['حدد الإجابة الصحيحة','تأكد من أن الإجابة المميزة بعلامة الصح هي الصحيحة علميًا، وإن لزم فاضغط على علامة الصح بجانب البديل الصحيح لتغييره. وإذا وجدت أكثر من إجابة مميزة فعدّل السؤال حتى تبقى إجابة واحدة.']
+  ],
+  videos:EDIT_V,
+  simple:['اقرأ كل سؤال وتأكد من صحة المعلومة ووضوح الصياغة ووجود إجابة واحدة صحيحة.','اضغط داخل النص لتعدّله مباشرة.','اضغط علامة الصح بجانب البديل الصحيح لتغيير الإجابة الصحيحة.'],
+  kw:[...K(7,'مراجعه الاسئله','راجع الاسئله','مراجعه السؤال','تعديل الاسئله','عدل السؤال','تعديل السؤال','تعديل نص','عدل نص','الاجابه الصحيحه','حدد الاجابه','علامه الصح','تصحيح الاسئله','مراجعه علميه','الاسئله المولده'),...K(3,'مراجعه','راجع','تعديل','عدل','=بديل','=بدائل','اخطاء')]
+},
+{ id:'q_image', icon:'🖼️', title:'إضافة صورة أو رسم توضيحي للسؤال',
+  steps:[
+   ['افتح خيار الوسائط','من خيار إضافة الوسائط (أيقونة الصورة) اختر رفع صورة من جهازك أو البحث عن صورة، مثل رسم لخلية أو جهاز مخبري.'],
+   ['ضعها مع السؤال وتحقق منها','ضع الصورة مع السؤال، ثم تحقق من أن الصورة واضحة ودقيقة علميًا.']
+  ],
+  videos:EDIT_V,
+  simple:['اضغط أيقونة الصورة (إضافة الوسائط) واختر رفع صورة أو البحث عن صورة.','تأكد أن الصورة واضحة ودقيقة علميًا.'],
+  kw:[...K(7,'اضافه صوره','ادراج صوره','ارفع صوره','رفع صوره','صوره للسؤال','رسم توضيحي','اضافه الوسائط','الوسائط','media'),...K(5,'صوره','صور','رسم','اضيف صوره')]
+},
+{ id:'q_add', icon:'➕', title:'تغيير نوع السؤال أو إضافة سؤال جديد',
+  steps:[
+   ['اضغط على إضافة سؤال','اضغط على Add question، ثم اختر نوعًا من الأنواع المتاحة مثل: الاختيار من متعدد، أو إكمال الفراغ (Fill in the blank)، أو المطابقة (Match)، أو إعادة الترتيب (Reorder).'],
+   ['اكتب السؤال والإجابات','اكتب السؤال والإجابات يدويًا، أو اطلب من الذكاء الاصطناعي إعادة صياغة سؤال موجود.']
+  ],
+  note:'ℹ️ بعض الأنواع المتقدمة قد لا تظهر في كل الحسابات، فاكتفِ بما يظهر لك.',
+  videos:EDIT_V,
+  simple:['اضغط Add question واختر النوع (اختيار من متعدد، إكمال الفراغ، مطابقة، إعادة ترتيب).','اكتب السؤال وإجاباته، أو اطلب من الذكاء الاصطناعي إعادة صياغة سؤال موجود.'],
+  kw:[...K(7,'اضافه سؤال','اضف سؤال','add question','نوع السؤال','تغيير نوع','اكمال الفراغ','fill in the blank','المطابقه','اعاده الترتيب','reorder','سؤال جديد','سؤال اضافي','اضيف سؤال'),...K(6,'انواع الاسئله','انواع الاسئلة'),...K(3,'match','=اضافه')]
+},
+{ id:'q_delete', icon:'🗑️', title:'حذف الأسئلة الضعيفة أو إعادة ترتيبها',
+  steps:[
+   ['احذف الأسئلة غير المناسبة','احذف أي سؤال مكرر أو خارج موضوع الاختبار.'],
+   ['أعد ترتيب الأسئلة','رتب الأسئلة من الأسهل إلى الأصعب إن أردت، وتأكد من أن الأسئلة تغطي مستويات مختلفة وليس التذكر فقط.']
+  ],
+  videos:EDIT_V,
+  simple:['احذف الأسئلة المكررة أو الخارجة عن الموضوع.','رتب الأسئلة من الأسهل إلى الأصعب، وتأكد أنها لا تقيس التذكر فقط.'],
+  kw:[...K(7,'حذف سؤال','احذف سؤال','حذف الاسئله','احذف','حذف','سؤال مكرر','الاسئله الضعيفه','ترتيب الاسئله','اعاده ترتيب الاسئله','من الاسهل الي الاصعب','delete'),...K(3,'مكرر')]
+},
+{ id:'settings', icon:'⚙️', title:'ضبط إعدادات الاختبار',
+  steps:[
+   ['أدخل بيانات الاختبار','اكتب عنوانًا واضحًا للاختبار، مثل: «الجدول الدوري – اسم الطالب»، واختر المادة (مثل: العلوم) والمستوى الدراسي.'],
+   ['اضبط المؤقت والنقاط','حدد زمن الإجابة عن كل سؤال بحسب نوعه (السؤال الحسابي أو التطبيقي يحتاج وقتًا أطول من سؤال التذكر)، وحدد النقاط التي ينالها الطالب لكل إجابة صحيحة.']
+  ],
+  videos:['set_pc','set_mobile'],
+  simple:['اكتب عنوانًا واضحًا للاختبار واختر المادة والمستوى.','حدد زمن كل سؤال حسب نوعه، وحدد النقاط لكل إجابة صحيحة.'],
+  kw:[...K(7,'ضبط اعدادات','اعدادات الاختبار','ضبط الاعدادات','بيانات الاختبار','عنوان الاختبار','المؤقت','مؤقت','timer','النقاط','نقاط','زمن الاجابه','وقت الاجابه','اعدادت'),...K(3,'اعدادات','ضبط','زمن','وقت')]
+},
+{ id:'preview', icon:'👀', title:'معاينة الاختبار كما يراه الطالب',
+  steps:[
+   ['افتح المعاينة','اضغط على زر المعاينة (Preview).'],
+   ['تحقق من الاختبار','انتقل بين الأسئلة، وتحقق من وضوح النص والصور ومناسبة الوقت.']
+  ],
+  videos:PUB_V,
+  simple:['اضغط Preview وتنقّل بين الأسئلة.','تأكد من وضوح النص والصور ومناسبة الوقت.'],
+  kw:[...K(8,'معاينه','عاين','preview','كما يراه الطالب','تجربه الاختبار')]
+},
+{ id:'publish', icon:'🚀', title:'نشر الاختبار',
+  steps:[
+   ['انشر الاختبار','اضغط على Publish ليصبح الاختبار متاحًا للمشاركة. تظهر بعد ذلك خيارات تشغيله مع الطلاب.']
+  ],
+  videos:PUB_V,
+  simple:['اضغط Publish ليصبح الاختبار جاهزًا للمشاركة، ثم اختر طريقة تشغيله.'],
+  kw:[...K(8,'نشر الاختبار','انشر الاختبار','نشر','انشر','publish','ننشر','اتاحه الاختبار')]
+},
+{ id:'run_share', icon:'🔗', title:'تشغيل الاختبار ومشاركته مع الطلاب',
+  steps:[
+   ['اختر طريقة تشغيل الاختبار','جلسة مباشرة (Live): يؤدي الطلاب الاختبار معًا داخل القاعة برمز دخول تعرضه على الشاشة. تكليف (Assign): يؤدي الطلاب الاختبار في أي وقت خلال مدة تحددها، وهو المناسب لاختبار يؤديه الطالب من منزله. اختر النمط المناسب لهدفك، ثم حدد موعد البدء والانتهاء إن كان تكليفًا.'],
+   ['احصل على رمز الدخول أو الرابط','بعد تشغيل الجلسة أو التكليف يظهر رمز دخول (Join code) ورابط. انسخ الرابط بالضغط على Copy link، أو اكتب الرمز للطلاب.'],
+   ['انضمام الطالب للاختبار','يفتح الطالب الرابط المرسل له، أو يدخل إلى wayground.com/join ويكتب الرمز، ثم يكتب اسمه ويبدأ الإجابة.']
+  ],
+  videos:PUB_V,
+  simple:['اختر Live (داخل القاعة) أو Assign (في أي وقت خلال مدة محددة).','انسخ الرابط بـ Copy link أو اعرض رمز الدخول Join code على الطلاب.','يدخل الطالب من الرابط أو من wayground.com/join ويكتب الرمز ثم اسمه.'],
+  kw:[...K(7,'مشاركه الاختبار','شارك الاختبار','مشاركه','شارك','join code','رمز الدخول','رمز الانضمام','نسخ الرابط','copy link','live','assign','جلسه مباشره','تكليف','تشغيل الاختبار','انضمام الطالب','انضمام الطلاب','wayground.com join','كيف يدخل الطالب','كيف يشترك الطالب','كيف يجيب الطالب','طريقه تشغيل','join'),...K(5,'رمز','الرابط'),...K(2,'الطلاب','الطالب')]
+},
+{ id:'results', icon:'📊', title:'متابعة النتائج وتحليلها',
+  steps:[
+   ['افتح تقرير الاختبار','من صفحة التقارير (Reports) اختر الاختبار الذي أجريته، لتظهر نتيجة كل طالب ونسبة الإجابات الصحيحة.'],
+   ['حلّل نتائج الأسئلة','تصفّح الأسئلة التي أخطأ فيها أكثر الطلاب. قد يكون السبب صعوبة مفهوم عندهم، وقد يكون سؤالًا غامضًا أو به خطأ يحتاج إلى تعديله.']
+  ],
+  videos:[],
+  simple:['افتح Reports واختر الاختبار لترى نتيجة كل طالب ونسبة الإجابات الصحيحة.','راجع الأسئلة التي أخطأ فيها أكثر الطلاب: هل المفهوم صعب أم السؤال غامض؟'],
+  kw:[...K(7,'النتائج','نتائج','تقرير','تقارير','reports','report','اداء الطلاب','تحليل النتائج','نسبه الاجابات','متابعه'),...K(3,'تحليل')]
+},
+{ id:'roadmap', icon:'🧭', title:'خطوات إنشاء اختبار إلكتروني بالذكاء الاصطناعي بالترتيب',
+  stages:[
+   ['المرحلة الأولى: إنشاء حساب والدخول إلى المنصة',['الدخول إلى wayground.com والتسجيل (مثلًا بحساب Google)','اختيار المادة والمرحلة']],
+   ['المرحلة الثانية: بدء اختبار جديد',['الضغط على Create ثم اختيار Assessment','اختيار Create with AI']],
+   ['المرحلة الثالثة: توليد الأسئلة بكتابة الأوامر',['اختيار Topic / Prompt وكتابة أمر واضح ومحدد','ضبط الخيارات ثم الضغط على Create resource']],
+   ['المرحلة الرابعة: توليد الأسئلة برفع ملف المحتوى',['تجهيز الملف (PDF أو Word أو Google Docs)','رفعه وتحديد عدد الأسئلة ونوعها ثم مقارنة الأسئلة بالملف']],
+   ['المرحلة الخامسة: مراجعة الأسئلة المولّدة وتعديلها',['قراءة كل سؤال وتعديل نصه وبدائله وتحديد الإجابة الصحيحة','إضافة الصور، وتغيير نوع السؤال أو إضافة سؤال، وحذف الأسئلة الضعيفة وإعادة ترتيبها']],
+   ['المرحلة السادسة: ضبط إعدادات الاختبار',['كتابة بيانات الاختبار','ضبط المؤقت والنقاط']],
+   ['المرحلة السابعة: المعاينة والنشر والمشاركة',['معاينة الاختبار (Preview) ثم نشره (Publish)','اختيار Live أو Assign ونسخ الرابط أو رمز الدخول','انضمام الطالب من الرابط أو wayground.com/join']],
+   ['المرحلة الثامنة: متابعة النتائج',['فتح تقرير الاختبار وتحليل نتائج الأسئلة']]
+  ],
+  note:UI_NOTE,
+  videos:['acc_pc','acc_mobile','prompt_pc','prompt_mobile','file_pc','file_mobile','edit_pc','edit_mobile','set_pc','set_mobile','pub_pc','pub_mobile'],
+  simple:['١) أنشئ حسابًا وادخل إلى Wayground.','٢) اضغط Create ثم Assessment ثم Create with AI.','٣) ولّد الأسئلة بأمر نصي أو برفع ملف.','٤) راجع الأسئلة وعدّلها.','٥) اضبط الإعدادات، ثم عاين الاختبار وانشره.','٦) شارك الرابط أو الرمز مع الطلاب وتابع النتائج.'],
+  kw:[...K(7,'من البدايه','من الصفر','كل الخطوات','جميع الخطوات','خطوات كامله','ملخص','مراحل','خريطه','خطوات انشاء اختبار','ما الخطوات','الخطوات الاساسيه','خطوات استخدام','كيف استخدم','كيف ابدا'),...K(2,'الخطوات')]
+}
 ];
+const SEC={}; SECTIONS.forEach(s=>SEC[s.id]=s);
 
-/* ============================================================
-   من هنا لتحت ما تغيريش حاجة
-   ============================================================ */
+/* ===== محرّك الاختيار ===== */
+const GREET=/^(سلام|السلام|مرحبا|اهلا|اهلا وسهلا|هلا|هاي|hello|hi|hey|صباح الخير|مساء الخير)( |$)/;
+const THANKS=/(شكرا|مشكور|تسلم|جزاك|thanks|thank you)/;
+const SIMPLE=/(ابسط|بسط|ببساطه|مبسط|ما فهمت|مفهمت|لم افهم|مش فاهم|مش فاهمه|صعب|وضح|وضحها|اشرح(ها)? تاني|اعد الشرح|مره تانيه|مره اخري)/;
+const REPEAT=/(^| )(اعد|كرر|اعيد)( |$)/;
+const ORDER=/(بالترتيب|ترتيب الخطوات|خطوه خطوه)/;
+const VIDEOALL=/(فيديوهات|لينكات|اللينكات|الروابط|روابط الفيديو|جميع الفيديو|كل الفيديو|الفيديوهات)/;
 
-const chat = document.getElementById("chat");
-const buttons = document.getElementById("buttons");
-document.getElementById("title").textContent = TITLE;
-document.title = TITLE;
-
-function addMessage(text, who) {
-  const div = document.createElement("div");
-  div.className = "msg " + who;
-  div.textContent = text;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
+function score(q){
+  const r=[];
+  for(const s of SECTIONS){
+    let sc=0; for(const e of s.kw) if(hit(q,e)) sc+=e.w;
+    if(sc>0) r.push({id:s.id,score:sc});
+  }
+  r.sort((a,b)=>b.score-a.score);
+  const specific=r.some(x=>['export_pdf','export_ppt','export_gslides'].includes(x.id)&&x.score>=5);
+  return specific? r.filter(x=>x.id!=='export_all'):r;
 }
-
-function showWelcome() {
-  chat.innerHTML = "";
-  addMessage(WELCOME, "bot");
+function choose(q){
+  const r=score(q); if(!r.length||r[0].score<3) return {ids:[],top:r.length?r[0].score:0};
+  const top=r[0].score, min=Math.max(3,top*0.4);
+  let ids=r.filter(x=>x.score>=min).slice(0,3).map(x=>x.id);
+  if(ids[0]==='roadmap') ids=['roadmap'];
+  ids=ids.flatMap(id=>SEC[id].combine?SEC[id].combine:[id]);
+  return {ids,top};
 }
+/* يعيد: {type:'greet'|'thanks'|'answer'|'videos'|'fallback', ids, simple} */
+function decide(raw,state){
+  const q=norm(raw); const words=q.split(' ').filter(Boolean);
+  if(!q) return {type:'empty'};
+  const c=choose(q);
+  if(GREET.test(q) && words.length<=5 && c.top<5) return {type:'greet'};
+  if(THANKS.test(q) && words.length<=6 && c.top<5) return {type:'thanks'};
+  if(VIDEOALL.test(q) && c.top<6) return {type:'videos'};
+  const wantOrder=ORDER.test(q);
+  const wantSimple=(SIMPLE.test(q)||REPEAT.test(q))&&!wantOrder;
+  if(wantSimple){
+    if(c.ids.length) return {type:'answer',ids:c.ids,simple:true};
+    if(state.last&&state.last.length) return {type:'answer',ids:state.last,simple:true};
+  }
+  if(wantOrder && c.top<5){
+    if(state.last&&state.last.length&&!/(من البدايه|من الصفر|كامله|كل )/.test(q)) return {type:'answer',ids:state.last,simple:false};
+    return {type:'answer',ids:['roadmap'],simple:false};
+  }
+  if(c.ids.length) return {type:'answer',ids:c.ids,simple:false};
+  return {type:'fallback'};
+}
+/*ENGINE_END*/
 
-FAQ.forEach(function (item) {
-  const b = document.createElement("button");
-  b.className = "q-btn";
-  b.textContent = item.q;
-  b.onclick = function () {
-    addMessage(item.q, "user");
-    setTimeout(function () { addMessage(item.a, "bot"); }, 300);
+/* =====================================================================
+   الإعدادات — عدّلها عند الحاجة
+   ===================================================================== */
+const CONFIG={
+  SHEET_URL:'https://script.google.com/macros/s/AKfycbzmnZXVgbA9iq1FCjPeaQsgN_7_8F81y_vcP3Nma6rVcgI5OvcREd4gx8DnybHW-S1_Zg/exec',
+  SHEET_METHOD:'POST',        // 'POST' (doPost) أو 'GET' (doGet)
+  NAME_FIELD:'name'           // اسم الحقل الذي يقرأه سكربت جوجل
+};
+
+const $=(s,r=document)=>r.querySelector(s);
+const store={
+  get(k,d){try{const v=localStorage.getItem(k);return v===null?d:v}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){}},
+  sget(k){try{return sessionStorage.getItem(k)}catch(e){return null}},
+  sset(k,v){try{sessionStorage.setItem(k,v)}catch(e){}}
+};
+function el(tag,cls,html){const e=document.createElement(tag); if(cls) e.className=cls; if(html!==undefined) e.innerHTML=html; return e}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+/* يلفّ الكلمات الإنجليزية في عنصر LTR ويدعم **bold** */
+function fmt(raw){
+  const lat=t=>{
+    let out='',last=0,m; const re=/[A-Za-z][A-Za-z0-9 .\-+\/]*[A-Za-z0-9]|[A-Za-z]/g;
+    while((m=re.exec(t))){ out+=escHtml(t.slice(last,m.index))+'<bdi class="lt" dir="ltr">'+escHtml(m[0])+'</bdi>'; last=m.index+m[0].length; }
+    return out+escHtml(t.slice(last));
   };
-  buttons.appendChild(b);
+  return raw.split(/(\*\*[^*]+\*\*)/).map(p=>/^\*\*/.test(p)?'<strong>'+lat(p.slice(2,-2))+'</strong>':lat(p)).join('');
+}
+
+/* =====================================================================
+   الصوت: قراءة عربية + إنجليزية بنطق صحيح
+   ===================================================================== */
+const TTS=(()=>{
+  const synth=('speechSynthesis' in window)?window.speechSynthesis:null;
+  let voices=[], token=0, unlocked=false;
+  const state={enabled:true, rate:1, gender:'female'};
+  const refresh=()=>{ if(synth) voices=synth.getVoices()||[]; };
+  if(synth){ refresh(); if('onvoiceschanged' in synth) synth.onvoiceschanged=refresh; }
+
+  const FEM=/female|zira|aria|jenny|samantha|ava\b|emma|michelle|sonia|libby|hazel|susan|karen|victoria|allison|joanna|jessica|nova|salma|zariyah|laila|layla|hoda|amina|zeina|noura|hala|sana|mariam|maryam|fatima|google\s*(العربية|arabic)|google us english/i;
+  const MAL=/\bmale\b|shakir|hamed|maged|majed|naayf|tarik|fahed|hamza|omar|ismail|bassel|kareem|david|mark|guy|davis|christopher|eric|ryan|daniel|alex|george|james|tom|fred|brian|andrew|roger/i;
+  const genderOf=n=>FEM.test(n)?'female':(MAL.test(n)?'male':null);
+  const lang=v=>(v.lang||'').toLowerCase().replace('_','-');
+
+  function pick(prefix){
+    const list=voices.filter(v=>lang(v).startsWith(prefix));
+    if(!list.length) return null;
+    let best=null,bs=-1e9;
+    for(const v of list){
+      const n=v.name; let s=0;
+      if(/natural|neural|online/i.test(n)) s+=60;
+      if(/premium|enhanced/i.test(n)) s+=40;
+      if(/google/i.test(n)) s+=25;
+      if(/microsoft/i.test(n)) s+=15;
+      if(/compact/i.test(n)) s-=10;
+      const l=lang(v);
+      if(prefix==='ar'){ if(l==='ar-eg') s+=8; else if(l==='ar-sa') s+=5; }
+      else { if(l==='en-us') s+=6; else if(l==='en-gb') s+=4; }
+      const g=genderOf(n); if(g) s+= (g===state.gender)?40:-40;
+      if(s>bs){bs=s;best=v}
+    }
+    return best;
+  }
+
+  const TR={gamma:'جاما',google:'جوجل',gmail:'جي ميل',powerpoint:'باوربوينت',pdf:'بي دي إف',slides:'سلايدز',youtube:'يوتيوب',chrome:'كروم',enter:'إنتر',escape:'إسكيب',start:'ستارت',for:'فور',free:'فري',continue:'كونتينيو',with:'ويذ',create:'كرييت',new:'نيو',presentation:'بريزنتيشن',generate:'جنريت',outline:'أوت لاين',upload:'أبلود',files:'فايلز',image:'إيميج',replace:'ريبليس',web:'ويب',search:'سيرش',blank:'بلانك',card:'كارد',cards:'كاردز',layout:'لاي أوت',table:'تيبل',video:'فيديو',insert:'إنسرت',edit:'إيديت',accept:'أكسبت',discard:'ديسكارد',present:'بريزنت',share:'شير',anyone:'إني وان',the:'ذا',link:'لينك',copy:'كوبي',export:'إكسبورت',download:'داونلود',view:'فيو',made:'ميد',font:'فونت',open:'أوبن',add:'أد',blocks:'بلوكس',dot:'دوت',app:'آب',to:'تو',a:'إيه',i:'آي',nlp:'إن إل بي',generative:'جنراتيف',paste:'بيست',in:'إن',text:'تكست',import:'إمبورت',downloads:'داونلودز',ai:'إيه آي',wayground:'واي جراوند',quizizz:'كويزيز',assessment:'أسيسمنت',lesson:'ليسن',live:'لايف',assign:'أسايْن',join:'جوين',code:'كود',reports:'ريبورتس',report:'ريبورت',publish:'بابليش',preview:'بريفيو',flashcards:'فلاش كاردز',passages:'باسيدجز',labeling:'ليبلينج',match:'ماتش',reorder:'ريأوردر',fill:'فيل',question:'كويشن',resource:'ريسورس',topic:'توبيك',prompt:'برومبت',document:'دوكيومنت',url:'يو آر إل',word:'وورد',docs:'دوكس',sign:'ساين',up:'أب',log:'لوج',classroom:'كلاس روم',personalization:'بيرسوناليزيشن',personal:'بيرسونال',p:'بي',d:'دي',f:'إف',n:'إن',l:'إل'};
+  const translit=t=>t.replace(/[A-Za-z]+/g,w=>TR[w.toLowerCase()]||w);
+
+  function clean(t){
+    return t
+      .replace(/wayground\.com\/join/gi,' Wayground dot com slash join ').replace(/wayground\.com/gi,' Wayground dot com ')
+      .replace(/https?:\/\/\S+/g,' ')
+      .replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{200D}]/gu,' ')
+      .replace(/[⋯…]/g,' ')
+      .replace(/\+/g,' زائد ')
+      .replace(/\bEsc\b/g,'Escape')
+      .replace(/\bAI\b/g,'A I')
+      .replace(/\bPDF\b/g,'P D F')
+      .replace(/\bNLP\b/g,'N L P')
+      .replace(/[*_`#>~|\/]/g,' ')
+      .replace(/[()\[\]«»"“”]/g,' ، ')
+      .replace(/[–—]/g,' ، ')
+      .replace(/\s+/g,' ').trim();
+  }
+  /* تقسيم النص إلى وحدات: جمل ثم مقاطع عربية/إنجليزية */
+  function toUnits(text){
+    const units=[];
+    const sentences=clean(text).match(/[^.!?؟!؛:\n]+[.!?؟!؛:]*/g)||[];
+    for(const sRaw of sentences){
+      const s=sRaw.trim(); if(!s||!/[A-Za-z\u0621-\u064A0-9]/.test(s)) continue;
+      const chunks=[]; let cur='';
+      const pieces=s.split(/([،,])/); const parts=[];
+      for(let k=0;k<pieces.length;k+=2) parts.push((pieces[k]||'')+(pieces[k+1]||''));
+      for(const part of parts){
+        const pt=part.trim(); if(!pt) continue;
+        if((cur+' '+pt).length>170 && cur){chunks.push(cur);cur=pt}else cur+=(cur?' ':'')+pt;
+      }
+      if(cur) chunks.push(cur);
+      chunks.forEach((chunk,ci)=>{
+        const toks=chunk.split(/\s+/).filter(Boolean); const runs=[]; let r=null;
+        for(const tk of toks){
+          const ar=/[\u0621-\u064A]/.test(tk), en=/[A-Za-z]/.test(tk);
+          const l=(en&&!ar)?'en':(ar?'ar':(r?r.lang:'ar'));
+          if(r&&r.lang===l) r.text+=' '+tk; else {r={lang:l,text:tk,gap:0}; runs.push(r)}
+        }
+        const last=runs[runs.length-1];
+        if(last) last.gap=(ci===chunks.length-1)?(/[.!?؟]$/.test(s)?260:180):90;
+        runs.forEach(x=>{ if(x.lang==='en') x.text=x.text.replace(/،/g,','); units.push(x) });
+      });
+    }
+    return units;
+  }
+
+  function stop(){ token++; if(synth){ try{synth.cancel()}catch(e){} } }
+  function unlock(){
+    if(!synth||unlocked) return; unlocked=true;
+    try{ const u=new SpeechSynthesisUtterance(' '); u.volume=0; synth.speak(u);}catch(e){}
+  }
+  function speak(text,onEnd){
+    if(!synth||!state.enabled){ onEnd&&onEnd(); return false; }
+    stop(); refresh();
+    const my=token; const units=toUnits(text); let i=0;
+    const enVoice=pick('en'), arVoice=pick('ar');
+    const next=()=>{
+      if(my!==token) return;
+      if(i>=units.length){ onEnd&&onEnd(); return; }
+      const u=units[i++];
+      let t=u.text, l=u.lang;
+      if(l==='en'&&!enVoice){ t=translit(t); l='ar'; }
+      const ut=new SpeechSynthesisUtterance(t);
+      const v=(l==='ar')?arVoice:enVoice;
+      if(v){ ut.voice=v; ut.lang=v.lang; } else ut.lang=(l==='ar')?'ar-EG':'en-US';
+      ut.rate=Math.min(2,Math.max(.5,state.rate*(l==='ar'?.96:1)));
+      ut.pitch=state.gender==='male'?.92:1.04;
+      const go=()=>{ if(my===token) setTimeout(next,u.gap) };
+      ut.onend=go;
+      ut.onerror=e=>{ if(e&&(e.error==='interrupted'||e.error==='canceled')) return; go(); };
+      synth.speak(ut);
+    };
+    setTimeout(()=>{ if(my===token) next(); },80);
+    return true;
+  }
+  return {state,speak,stop,unlock,toUnits,supported:!!synth,
+    hasArabic:()=>{refresh();return voices.some(v=>lang(v).startsWith('ar'))},
+    voicesReady:()=>{refresh();return voices.length>0}};
+})();
+
+/* =====================================================================
+   بناء الإجابات
+   ===================================================================== */
+const ORD=['الأولى','الثانية','الثالثة','الرابعة','الخامسة','السادسة','السابعة','الثامنة','التاسعة','العاشرة'];
+function videoCard(key){
+  const v=VIDEOS[key];
+  const b=el('button','vcard'); b.type='button'; b.dataset.v=key;
+  b.innerHTML='<span class="vthumb"><img alt="" loading="lazy" src="https://i.ytimg.com/vi/'+v.id+'/mqdefault.jpg" onerror="this.remove()"></span>'+
+    '<span class="vtext"><span class="vtitle">'+fmt('▶ فيديو: '+v.title)+'</span><span class="vurl">youtu.be/'+v.id+'</span></span>';
+  return b;
+}
+function buildAnswer(ids,simple){
+  const root=el('div','answer'); const speech=[];
+  for(const id of ids){
+    const s=SEC[id]; const sec=el('section','sec');
+    sec.appendChild(el('h3','',s.icon+' '+fmt(s.title))); speech.push(s.title+'.');
+    if(simple){
+      sec.appendChild(el('span','badge-simple','✅ بطريقة أبسط'));
+      speech.push('بطريقة أبسط.');
+      const ul=el('ul','check'); s.simple.forEach(t=>{ul.appendChild(el('li','',fmt(t))); speech.push(t.replace(/^[٠-٩0-9]+\)\s*/,'')+'.')}); sec.appendChild(ul);
+    }else{
+      (s.intro||[]).forEach(t=>{sec.appendChild(el('p','',fmt(t))); speech.push(t)});
+      if(s.steps){
+        const ol=el('ol','steps');
+        s.steps.forEach((st,i)=>{
+          const li=el('li','');
+          const t=Array.isArray(st)?st[0]:null, d=Array.isArray(st)?st[1]:st;
+          li.innerHTML='<div>'+(t?'<span class="st">'+fmt(t)+'</span>':'')+'<span class="sd">'+fmt(d)+'</span></div>';
+          ol.appendChild(li);
+          speech.push('الخطوة '+(ORD[i]||(i+1))+': '+(t?t+'. ':'')+d);
+        });
+        sec.appendChild(ol);
+      }
+      if(s.items){
+        const ul=el('ul','items');
+        s.items.forEach(it=>{ul.appendChild(el('li','','<b>'+fmt(it[0])+':</b> '+fmt(it[1]))); speech.push(it[0]+': '+it[1])});
+        sec.appendChild(ul);
+      }
+      if(s.stages){
+        s.stages.forEach(st=>{
+          const d=el('div','stage'); d.appendChild(el('h4','',fmt(st[0]))); speech.push(st[0]+'.');
+          const ul=el('ul',''); st[1].forEach(x=>{ul.appendChild(el('li','',fmt(x))); speech.push(x+'.')}); d.appendChild(ul); sec.appendChild(d);
+        });
+      }
+      if(s.note){ sec.appendChild(el('div','note',fmt(s.note))); speech.push(s.note); }
+    }
+    if(s.videos&&s.videos.length){
+      const box=el('div','videos'); s.videos.forEach(k=>box.appendChild(videoCard(k))); sec.appendChild(box);
+      speech.push(s.videos.length>1?'ستجد الفيديوهات التوضيحية مرفقة أسفل الشرح.':'ستجد الفيديو التوضيحي مرفقًا أسفل الشرح.');
+    }
+    root.appendChild(sec);
+  }
+  return {node:root,speech:speech.join(' ')};
+}
+
+const FALLBACK_TEXT='لم أجد إجابة لهذا السؤال في المادة التعليمية المرفوعة 📚. أستطيع مساعدتك في موضوعات هذه المادة فقط: مفهوم الاختبارات الإلكترونية وأهميتها، ومميزات الذكاء الاصطناعي، والتعريف بمنصة Wayground، وإنشاء الحساب، وتوليد الأسئلة بالأوامر النصية أو برفع ملف، ومراجعة الأسئلة وتعديلها، وضبط الإعدادات، ثم المعاينة والنشر والمشاركة مع الطلاب ومتابعة النتائج. جرّب أن تعيد صياغة سؤالك بكلمات أخرى.';
+
+/* =====================================================================
+   واجهة المحادثة
+   ===================================================================== */
+const chat=$('#chat'), qEl=$('#q'), sendBtn=$('#send');
+const S={name:'',last:[],busy:false,speakingBtn:null};
+
+function scrollDown(){ window.scrollTo({top:document.documentElement.scrollHeight,behavior:'smooth'}); }
+function stopSpeaking(){
+  TTS.stop();
+  document.querySelectorAll('.msg.speaking').forEach(m=>m.classList.remove('speaking'));
+  document.querySelectorAll('.listen.on').forEach(b=>{b.classList.remove('on'); b.textContent='🔊 استمع'});
+}
+function speakMessage(msgEl,btn,text){
+  if(btn&&btn.classList.contains('on')){ stopSpeaking(); return; }
+  stopSpeaking();
+  if(!TTS.state.enabled){ return; }
+  if(btn){ btn.classList.add('on'); btn.textContent='⏹ إيقاف'; }
+  msgEl.classList.add('speaking');
+  TTS.speak(text,()=>{ msgEl.classList.remove('speaking'); if(btn){btn.classList.remove('on'); btn.textContent='🔊 استمع'} });
+}
+function addUser(text){
+  const m=el('div','msg user'); m.appendChild(el('div','avatar','🧑‍🎓')); const b=el('div','bubble'); b.textContent=text; m.appendChild(b);
+  chat.appendChild(m); scrollDown();
+}
+function addBot(node,speech,{autoRead=true}={}){
+  const m=el('div','msg bot'); m.appendChild(el('div','avatar','✨'));
+  const b=el('div','bubble'); b.appendChild(node);
+  const act=el('div','msg-actions'); const lb=el('button','listen','🔊 استمع'); lb.type='button';
+  lb.addEventListener('click',()=>{TTS.unlock(); speakMessage(m,lb,speech)});
+  if(TTS.supported){ act.appendChild(lb); b.appendChild(act); }
+  m.appendChild(b); chat.appendChild(m); scrollDown();
+  if(autoRead&&$('#vAuto').checked&&TTS.state.enabled) speakMessage(m,lb,speech);
+  return m;
+}
+function botText(text,opts){ const p=el('p','',fmt(text)); return addBot(p,text,opts); }
+function typing(){ const m=el('div','msg bot'); m.appendChild(el('div','avatar','✨')); m.appendChild(el('div','bubble','<span class="typing"><i></i><i></i><i></i></span>')); chat.appendChild(m); scrollDown(); return m; }
+
+function respond(raw){
+  const d=decide(raw,S);
+  switch(d.type){
+    case 'greet':{ const t='أهلًا بك يا '+firstName()+'! اكتب سؤالك عن إنشاء الاختبارات الإلكترونية في Wayground وسأجيبك من المادة التعليمية، مع روابط الفيديوهات التوضيحية. 😊'; botText(t); break; }
+    case 'thanks':{ botText('عفوًا يا '+firstName()+'! يسعدني مساعدتك. اسألني عن أي خطوة أخرى في تصميم اختبارك الإلكتروني. 🌟'); break; }
+    case 'videos':{
+      const box=el('div','videos'); Object.keys(VIDEOS).forEach(k=>box.appendChild(videoCard(k)));
+      const wrap=el('div',''); wrap.appendChild(el('p','','هذه جميع الفيديوهات التوضيحية المرفقة بالمادة التعليمية. اضغط على أي فيديو لمشاهدته هنا في نفس الصفحة:')); wrap.appendChild(box);
+      addBot(wrap,'هذه جميع الفيديوهات التوضيحية المرفقة بالمادة التعليمية. اضغط على أي فيديو لمشاهدته هنا في نفس الصفحة.'); break; }
+    case 'answer':{
+      S.last=d.ids; const a=buildAnswer(d.ids,d.simple); addBot(a.node,a.speech); break; }
+    default: botText(FALLBACK_TEXT);
+  }
+}
+function firstName(){ return (S.name||'').split(/\s+/)[0]||'عزيزي الطالب'; }
+
+function send(){
+  const text=qEl.value.trim(); if(!text||S.busy) return;
+  TTS.unlock(); stopSpeaking();
+  addUser(text); qEl.value=''; qEl.style.height='auto';
+  S.busy=true; sendBtn.disabled=true;
+  const t=typing();
+  setTimeout(()=>{ t.remove(); try{ respond(text) }catch(e){ console.error(e); botText('حدث خطأ غير متوقع، حاول إرسال سؤالك مرة أخرى.') } S.busy=false; sendBtn.disabled=false; qEl.focus({preventScroll:true}); },450+Math.random()*350);
+}
+$('#composer').addEventListener('submit',e=>{e.preventDefault(); send()});
+qEl.addEventListener('keydown',e=>{ if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){ e.preventDefault(); send() }});
+qEl.addEventListener('input',()=>{ qEl.style.height='auto'; qEl.style.height=Math.min(qEl.scrollHeight,120)+'px' });
+
+/* ===== مشغل الفيديو داخل الصفحة ===== */
+const vo=$('#videoOverlay'), vf=$('#vmFrame');
+function openVideo(key){
+  const v=VIDEOS[key]; if(!v) return; stopSpeaking();
+  $('#vmTitle').textContent=v.title;
+  $('#vmExt').href=(v.short?'https://www.youtube.com/shorts/':'https://youtu.be/')+v.id;
+  vf.src='https://www.youtube.com/embed/'+v.id+'?autoplay=1&rel=0&hl=ar&playsinline=1';
+  vo.classList.add('show'); $('#vmClose').focus();
+}
+function closeVideo(){ vo.classList.remove('show'); vf.src='about:blank'; }
+chat.addEventListener('click',e=>{ const c=e.target.closest('.vcard'); if(c) openVideo(c.dataset.v) });
+$('#vmClose').addEventListener('click',closeVideo);
+vo.addEventListener('click',e=>{ if(e.target===vo) closeVideo() });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&vo.classList.contains('show')) closeVideo() });
+
+/* ===== شريط الصوت ===== */
+const vOn=$('#vOn'), vSpeed=$('#vSpeed'), vGender=$('#vGender'), vAuto=$('#vAuto');
+vOn.value=store.get('wg_on','on'); vSpeed.value=store.get('wg_speed','1'); vGender.value=store.get('wg_gender','female'); vAuto.checked=store.get('wg_auto','0')==='1';
+function applyVoice(){
+  TTS.state.enabled=vOn.value==='on'; TTS.state.rate=parseFloat(vSpeed.value)||1; TTS.state.gender=vGender.value;
+  store.set('wg_on',vOn.value); store.set('wg_speed',vSpeed.value); store.set('wg_gender',vGender.value); store.set('wg_auto',vAuto.checked?'1':'0');
+  if(!TTS.state.enabled) stopSpeaking();
+}
+[vOn,vSpeed,vGender,vAuto].forEach(x=>x.addEventListener('change',applyVoice)); applyVoice();
+$('#changeName').addEventListener('click',()=>{
+  stopSpeaking(); try{localStorage.removeItem('wg_name')}catch(e){}
+  chat.innerHTML=''; S.last=[]; S.name=''; $('#nameInput').value=''; $('#nameErr').textContent='';
+  $('#nameOverlay').classList.add('show'); setTimeout(()=>$('#nameInput').focus(),100);
 });
+$('#clearChat').addEventListener('click',()=>{ stopSpeaking(); chat.innerHTML=''; S.last=[]; welcome(true); });
+$('#listenNotes').addEventListener('click',e=>{
+  TTS.unlock(); const b=e.currentTarget; if(b.dataset.on==='1'){ stopSpeaking(); b.dataset.on='0'; b.textContent='🔊 استمع للملاحظات'; return; }
+  stopSpeaking(); b.dataset.on='1'; b.textContent='⏹ إيقاف';
+  TTS.speak($('#notes').innerText.replace('استمع للملاحظات',''),()=>{b.dataset.on='0'; b.textContent='🔊 استمع للملاحظات'});
+});
+(function voiceWarn(){
+  const w=$('#voiceWarn');
+  if(!TTS.supported){ w.textContent='متصفحك لا يدعم القراءة الصوتية. جرّب Google Chrome أو Microsoft Edge أو Safari.'; w.classList.add('show'); $('#listenNotes').hidden=true; return; }
+  setTimeout(()=>{ if(TTS.voicesReady()&&!TTS.hasArabic()){ w.textContent='لم أجد صوتًا عربيًا على جهازك. لأفضل صوت بشري افتح الصفحة من Microsoft Edge (أصوات Natural) أو Chrome، أو ثبّت صوتًا عربيًا من إعدادات النظام.'; w.classList.add('show'); } },2000);
+})();
 
-document.getElementById("reset").onclick = showWelcome;
-showWelcome();
+/* ===== اسم الطالب وتسجيله في الشيت ===== */
+const PENDING_KEY='wg_pending_names';
+async function sendToSheet(fields){
+  if(CONFIG.SHEET_METHOD==='GET'){
+    await fetch(CONFIG.SHEET_URL+'?'+new URLSearchParams(fields).toString(),{method:'GET',mode:'no-cors'});
+  }else{
+    await fetch(CONFIG.SHEET_URL,{method:'POST',mode:'no-cors',body:new URLSearchParams(fields)});
+  }
+}
+function fieldsFor(name,when){
+  const d=when?new Date(when):new Date(); const f={};
+  f[CONFIG.NAME_FIELD]=name; f.timestamp=d.toISOString(); f.date=d.toLocaleDateString('en-GB'); f.time=d.toLocaleTimeString('en-GB');
+  return f;
+}
+function queuePending(name){ try{ const a=JSON.parse(store.get(PENDING_KEY,'[]')); a.push({name,at:Date.now()}); store.set(PENDING_KEY,JSON.stringify(a)); }catch(e){} }
+async function flushPending(){
+  let a=[]; try{ a=JSON.parse(store.get(PENDING_KEY,'[]')) }catch(e){} if(!a.length) return;
+  const rest=[]; for(const it of a){ try{ await sendToSheet(fieldsFor(it.name,it.at)) }catch(e){ rest.push(it) } }
+  store.set(PENDING_KEY,JSON.stringify(rest));
+}
+async function registerName(name){
+  try{ await Promise.race([sendToSheet(fieldsFor(name)),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),5000))]); }
+  catch(e){ queuePending(name); }
+}
+function validName(n){ return n.split(/\s+/).filter(w=>/[\u0621-\u064Aa-zA-Z]{2,}/.test(w)).length>=3; }
+function welcome(afterClear){
+  const t=afterClear? 'تم مسح المحادثة. اكتب سؤالك يا '+firstName()+' وسأجيبك من المادة التعليمية. ✨'
+    : 'أهلًا بك يا '+firstName()+'! ✨ اكتب سؤالك عن إنشاء الاختبارات في Wayground في المربع بالأسفل، وسأجيبك من المادة التعليمية المرفوعة مع روابط الفيديوهات التوضيحية.';
+  botText(t,{autoRead:false});
+}
+function enterChat(name){
+  S.name=name; $('#nameOverlay').classList.remove('show');
+  welcome(false); setTimeout(()=>qEl.focus({preventScroll:true}),150);
+}
+$('#nameForm').addEventListener('submit',async e=>{
+  e.preventDefault(); TTS.unlock();
+  const inp=$('#nameInput'), err=$('#nameErr'), go=$('#nameGo');
+  const name=inp.value.replace(/\s+/g,' ').trim();
+  if(!validName(name)){ err.textContent='من فضلك اكتب اسمك ثلاثي (ثلاث كلمات على الأقل).'; inp.focus(); return; }
+  err.textContent=''; go.disabled=true; go.textContent='جارٍ التسجيل…';
+  await registerName(name);
+  store.set('wg_name',name); go.disabled=false; go.textContent='ابدأ';
+  enterChat(name);
+});
+(function init(){
+  flushPending();
+  const saved=store.get('wg_name','');
+  if(saved) enterChat(saved); else setTimeout(()=>$('#nameInput').focus(),100);
+})();
 </script>
-
 </body>
 </html>
